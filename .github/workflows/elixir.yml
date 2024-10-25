@@ -26,7 +26,7 @@ jobs:
         key: ${{ runner.os }}-mix-${{ hashFiles('**/mix.lock') }}
     - name: Install dependencies
       run: mix deps.get
-    - name: Run check
-      run: mix check
+    - name: Run test
+      run: mix test
 
 

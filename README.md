@@ -76,12 +76,9 @@ end
 Once you have these data structures, you can hand them to Tragedy to be run.
 
 ```elixir
-pid =
-  start_supervised!(
-    {DomainSupervisor, %DomainConfig{}}
-  )
+{:ok, pid} = Tragedy.DomainSupervisor.start_link(%Tragedy.DomainConfig{})
 
-:ok = DomainSupervisor.dispatch(pid, %MyApp.CreateAccount{account_id: "1"})
+:ok = Tragedy.DomainSupervisor.dispatch(pid, %MyApp.CreateAccount{account_id: "1"})
 ```
 
 When this `CreateAccount` command is handed to the domain supervisor, Tragedy will:

@@ -26,7 +26,8 @@ defmodule Tragedy.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:calamity, github: "Cantido/calamity"}
+      {:calamity, github: "Cantido/calamity"},
+      {:dialyxir, "~> 1.4", only: [:dev, :test], runtime: false}
     ]
   end
 end

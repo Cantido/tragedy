@@ -15,6 +15,7 @@ defmodule Tragedy.CommandRouter do
     {:ok, %{domain_pid: domain_pid, config: config}}
   end
 
+  @spec dispatch(GenServer.server(), Calamity.Command.t()) :: :ok | {:error, term()}
   def dispatch(router, command) do
     GenServer.call(router, {:dispatch, command})
   end

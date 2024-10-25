@@ -14,6 +14,7 @@ defmodule Tragedy.SagaServer do
     {:ok, %{module: module, id: id, saga: module.new(id)}}
   end
 
+  @spec handle_event(GenServer.server(), term()) :: {:ok, list(Calamity.Command.t())}
   def handle_event(pid, event) do
     GenServer.call(pid, {:handle_event, event})
   end

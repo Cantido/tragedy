@@ -15,6 +15,7 @@ defmodule Tragedy.AggregateServer do
     {:ok, %{module: agg_mod, id: agg_id, aggregate: agg_state}}
   end
 
+  @spec handle_command(GenServer.server(), Calamity.Command.t()) :: {:ok, list(term())} | {:error, term()}
   def handle_command(agg_pid, command) do
     GenServer.call(agg_pid, {:handle_command, command})
   end

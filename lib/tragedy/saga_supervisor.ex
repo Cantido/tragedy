@@ -32,9 +32,6 @@ defmodule Tragedy.SagaSupervisor do
             case SagaServer.handle_event(saga, event) do
               {:ok, commands} ->
                 List.wrap(commands)
-
-              _ ->
-                []
             end
           end)
 

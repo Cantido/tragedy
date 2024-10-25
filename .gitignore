@@ -24,3 +24,7 @@ tragedy-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+# Dialyzer stuff
+/priv/plts/*.plt
+/priv/plts/*.plt.hash

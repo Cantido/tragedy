@@ -1,5 +1,7 @@
 # Tragedy
 
+[![Elixir build](https://github.com/Cantido/tragedy/actions/workflows/elixir.yml/badge.svg)](https://github.com/Cantido/tragedy/actions/workflows/elixir.yml)
+
 Tragedy is a framework for event-sourced applications, inspired heavily by
 [Commanded](https://github.com/commanded/commanded).
 

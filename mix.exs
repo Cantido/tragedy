@@ -26,8 +26,7 @@ defmodule Tragedy.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      #{:calamity, github: "Cantido/calamity"}
-      {:calamity, path: "../calamity"}
+      {:calamity, github: "Cantido/calamity"}
     ]
   end
 end

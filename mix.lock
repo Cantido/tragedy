@@ -1,0 +1,3 @@
+%{
+  "calamity": {:git, "https://github.com/Cantido/calamity.git", "deb3757a0d2a782cdb4261081d53ecb8130da949", []},
+}

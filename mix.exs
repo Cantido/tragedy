@@ -8,7 +8,11 @@ defmodule Tragedy.MixProject do
       elixir: "~> 1.16",
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
-      deps: deps()
+      deps: deps(),
+      dialyzer: [
+        plt_local_path: "priv/plts/tragedy.plt",
+        plt_core_path: "priv/plts/core.plt"
+      ]
     ]
   end
 

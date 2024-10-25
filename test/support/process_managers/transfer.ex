@@ -65,7 +65,8 @@ defmodule Calamity.ProcessManagers.Transfer do
     end
 
     def apply(
-          %Calamity.ProcessManagers.Transfer{from: from, amount: amount, stage: :funds_withdrawn} = pm,
+          %Calamity.ProcessManagers.Transfer{from: from, amount: amount, stage: :funds_withdrawn} =
+            pm,
           %FundsDeposited{account_id: from, amount: amount}
         ) do
       %Calamity.ProcessManagers.Transfer{

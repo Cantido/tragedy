@@ -36,7 +36,6 @@ defmodule Tragedy.SagaServer do
         saga = ProcessManager.apply(state.saga, event)
         commands = ProcessManager.handle(saga, event)
 
-
         {:stop, :normal, {:ok, commands}, %{state | saga: saga}}
 
       _ ->

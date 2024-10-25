@@ -43,7 +43,14 @@ defmodule TragedyTest do
 
     :ok = DomainSupervisor.dispatch(pid, %Calamity.Commands.CreateAccount{account_id: "1"})
     :ok = DomainSupervisor.dispatch(pid, %Calamity.Commands.CreateAccount{account_id: "2"})
-    assert {:error, :insufficient_funds} == DomainSupervisor.dispatch(pid, %Calamity.Commands.RequestTransfer{from: "1", to: "2", transfer_id: "test transfer", amount: 100})
+
+    assert {:error, :insufficient_funds} ==
+             DomainSupervisor.dispatch(pid, %Calamity.Commands.RequestTransfer{
+               from: "1",
+               to: "2",
+               transfer_id: "test transfer",
+               amount: 100
+             })
   end
 
   test "sagas get run" do
@@ -58,8 +65,17 @@ defmodule TragedyTest do
 
     :ok = DomainSupervisor.dispatch(pid, %Calamity.Commands.CreateAccount{account_id: "1"})
     :ok = DomainSupervisor.dispatch(pid, %Calamity.Commands.CreateAccount{account_id: "2"})
-    :ok = DomainSupervisor.dispatch(pid, %Calamity.Commands.DepositFunds{account_id: "1", amount: 100})
-    :ok = DomainSupervisor.dispatch(pid, %Calamity.Commands.RequestTransfer{from: "1", to: "2", transfer_id: "test transfer", amount: 100})
+
+    :ok =
+      DomainSupervisor.dispatch(pid, %Calamity.Commands.DepositFunds{account_id: "1", amount: 100})
+
+    :ok =
+      DomainSupervisor.dispatch(pid, %Calamity.Commands.RequestTransfer{
+        from: "1",
+        to: "2",
+        transfer_id: "test transfer",
+        amount: 100
+      })
 
     assert_receive {:event, %Calamity.Events.FundsDeposited{transfer_id: "test transfer"}}
   end

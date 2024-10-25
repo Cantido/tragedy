@@ -30,7 +30,9 @@ defmodule Tragedy.CommandRouter do
            DomainSupervisor.saga_supervisor_pid(state.domain_pid),
          listener_sup_pid when is_pid(pid) <-
            DomainSupervisor.listener_supervisor_pid(state.domain_pid) do
-      result = do_dispatch(pid, saga_sup_pid, listener_sup_pid, state.config.saga_modules, [command])
+      result =
+        do_dispatch(pid, saga_sup_pid, listener_sup_pid, state.config.saga_modules, [command])
+
       {:reply, result, state}
     else
       {:ok, nil} ->
@@ -48,9 +50,7 @@ defmodule Tragedy.CommandRouter do
   defp do_dispatch(agg_pid, saga_sup_pid, listener_sup_pid, saga_modules, [
          command | remaining_commands
        ]) do
-
     with {:ok, events} <- AggregateServer.handle_command(agg_pid, command) do
-
       Enum.each(saga_modules, fn saga_mod ->
         saga_id =
           Enum.find_value(events, fn event ->
@@ -87,6 +87,5 @@ defmodule Tragedy.CommandRouter do
       err ->
         err
     end
-
   end
 end

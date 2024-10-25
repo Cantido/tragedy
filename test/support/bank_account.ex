@@ -21,11 +21,9 @@ defmodule Calamity.BankAccount do
     TransferInitiated
   }
 
-  defstruct [
-    account_id: nil,
-    balance: 0,
-    name: nil
-  ]
+  defstruct account_id: nil,
+            balance: 0,
+            name: nil
 
   def new(id) do
     %__MODULE__{account_id: id}

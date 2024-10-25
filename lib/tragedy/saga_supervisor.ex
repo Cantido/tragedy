@@ -37,6 +37,7 @@ defmodule Tragedy.SagaSupervisor do
                 []
             end
           end)
+
         _ ->
           false
       end)

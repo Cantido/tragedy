@@ -27,8 +27,10 @@ defmodule Tragedy.AggregateServer do
     case Aggregate.execute(state.aggregate, command) do
       {:error, err} ->
         {:reply, {:error, err}, state}
+
       {:ok, events} ->
         {:reply, {:ok, events}, state}
+
       events ->
         {:reply, {:ok, List.wrap(events)}, state}
     end

@@ -7,7 +7,7 @@ defmodule Tragedy.ListenerSupervisor do
 
   @impl true
   def init(%Tragedy.DomainConfig{} = config) do
-    Supervisor.init(config.listener_modules, strategy: :one_for_one)
+    Supervisor.init(config.listener_specs, strategy: :one_for_one)
   end
 
   def handle_events(pid, events) do

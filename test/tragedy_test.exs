@@ -21,7 +21,7 @@ defmodule TragedyTest do
   test "listeners get events" do
     pid =
       start_supervised!(
-        {DomainSupervisor, %DomainConfig{listener_modules: [{TestListener, self()}]}}
+        {DomainSupervisor, %DomainConfig{listener_specs: [{TestListener, self()}]}}
       )
 
     :ok = DomainSupervisor.dispatch(pid, %Calamity.Commands.CreateAccount{account_id: "test id"})
@@ -37,7 +37,7 @@ defmodule TragedyTest do
         {DomainSupervisor,
          %DomainConfig{
            saga_modules: [Calamity.ProcessManagers.Transfer],
-           listener_modules: [{TestListener, self()}]
+           listener_specs: [{TestListener, self()}]
          }}
       )
 
@@ -52,7 +52,7 @@ defmodule TragedyTest do
         {DomainSupervisor,
          %DomainConfig{
            saga_modules: [Calamity.ProcessManagers.Transfer],
-           listener_modules: [{TestListener, self()}]
+           listener_specs: [{TestListener, self()}]
          }}
       )
 

@@ -8,7 +8,7 @@ defmodule Calamity.Commands.RenameAccount do
     :name
   ]
 
-  defimpl Calamity.Command do
+  defimpl Tragedy.Command do
     def aggregate(command) do
       {Calamity.BankAccount, command.account_id}
     end

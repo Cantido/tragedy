@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 defmodule Calamity.ProcessManagers.Transfer do
-  use Calamity, :process_manager
+  use Tragedy, :saga
 
   alias Calamity.Commands.{
     DepositFunds,
@@ -42,7 +42,7 @@ defmodule Calamity.ProcessManagers.Transfer do
     %__MODULE__{transfer_id: transfer_id}
   end
 
-  defimpl Calamity.ProcessManager do
+  defimpl Tragedy.Saga do
     def apply(pm, %TransferInitiated{transfer_id: transfer_id, from: from, to: to, amount: amount}) do
       %Calamity.ProcessManagers.Transfer{
         pm

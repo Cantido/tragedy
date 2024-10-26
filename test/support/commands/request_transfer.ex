@@ -10,7 +10,7 @@ defmodule Calamity.Commands.RequestTransfer do
     :amount
   ]
 
-  defimpl Calamity.Command do
+  defimpl Tragedy.Command do
     def aggregate(command) do
       {Calamity.BankAccount, command.from}
     end

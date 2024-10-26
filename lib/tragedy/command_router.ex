@@ -15,7 +15,7 @@ defmodule Tragedy.CommandRouter do
     {:ok, %{domain_pid: domain_pid, config: config}}
   end
 
-  @spec dispatch(GenServer.server(), Calamity.Command.t()) :: :ok | {:error, term()}
+  @spec dispatch(GenServer.server(), Tragedy.Command.t()) :: :ok | {:error, term()}
   def dispatch(router, command) do
     GenServer.call(router, {:dispatch, command})
   end
@@ -23,7 +23,7 @@ defmodule Tragedy.CommandRouter do
   def handle_call({:dispatch, command}, _from, state) do
     agg_pool_pid = DomainSupervisor.aggregate_pool_supervisor_pid(state.domain_pid)
 
-    {agg, id} = Calamity.Command.aggregate(command)
+    {agg, id} = Tragedy.Command.aggregate(command)
 
     with {:ok, pid} when is_pid(pid) <-
            AggregatePoolSupervisor.start_aggregate(agg_pool_pid, agg, id),

@@ -5,8 +5,7 @@
 Tragedy is a framework for event-sourced applications, inspired heavily by
 [Commanded](https://github.com/commanded/commanded).
 
-Define your domain using the protocols and behaviors provided by
-[Calamity](https://github.com/Cantido/calamity), then you can start
+Define your domain using the protocols and behaviors provided, then you can start
 dispatching events to Tragedy where they will update aggregates and
 publish events.
 
@@ -26,11 +25,11 @@ and Listeners.
 - *Listeners* also receive events and allow you to plug in arbitrary business
   logic, like read model projections.
 
-First, define an aggregate with `Calamity`:
+First, define an aggregate with `Tragedy`:
 
 ```elixir
 defmodule MyApp.BankAccount do
-  use Calamity, :aggregate
+  use Tragedy, :aggregate
 
   defstruct [
     :account_id,
@@ -41,7 +40,7 @@ defmodule MyApp.BankAccount do
     %__MODULE__{account_id: id}
   end
 
-  defimpl Calamity.Aggregate do
+  defimpl Tragedy.Aggregate do
     def id(account) do
       account.account_id
     end
@@ -62,7 +61,7 @@ one or more events that indicate what the command caused to happen:
 
 ```elixir
 defmodule MyApp.CreateAccount do
-  @derive {Calamity.Command, mod: MyApp.BankAccount, key: :account_id}
+  @derive {Tragedy.Command, mod: MyApp.BankAccount, key: :account_id}
   defstruct [
     :account_id
   ]

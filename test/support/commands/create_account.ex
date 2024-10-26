@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 defmodule Calamity.Commands.CreateAccount do
-  @derive {Calamity.Command, mod: Calamity.BankAccount, key: :account_id}
+  @derive {Tragedy.Command, mod: Calamity.BankAccount, key: :account_id}
   defstruct [
     :account_id
   ]

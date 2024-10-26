@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: MIT
 
 defmodule Calamity.BankAccount do
-  use Calamity, :aggregate
+  use Tragedy, :aggregate
 
   alias Calamity.Commands.{
     CreateAccount,
@@ -29,7 +29,7 @@ defmodule Calamity.BankAccount do
     %__MODULE__{account_id: id}
   end
 
-  defimpl Calamity.Aggregate do
+  defimpl Tragedy.Aggregate do
     def id(account) do
       account.account_id
     end

@@ -9,7 +9,7 @@ defmodule Calamity.Commands.DepositFunds do
     :amount
   ]
 
-  defimpl Calamity.Command do
+  defimpl Tragedy.Command do
     def aggregate(%{account_id: id}) do
       {Calamity.BankAccount, id}
     end

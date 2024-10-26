@@ -1,15 +1,21 @@
 defmodule Tragedy.ListenerSupervisor do
+  @moduledoc false
+
   use Supervisor
 
+  @doc false
+  @spec start_link(Tragedy.DomainConfig.t()) :: Supervisor.on_start()
   def start_link(config) do
     Supervisor.start_link(__MODULE__, config)
   end
 
-  @impl true
+  @impl Supervisor
   def init(%Tragedy.DomainConfig{} = config) do
     Supervisor.init(config.listener_specs, strategy: :one_for_one)
   end
 
+  @doc false
+  @spec handle_events(Supervisor.supervisor(), list(any())) :: :ok
   def handle_events(pid, events) do
     pid
     |> Supervisor.which_children()

@@ -16,6 +16,7 @@ defmodule Tragedy.Saga.Base do
   """
   @callback new(any()) :: Tragedy.Saga.t()
 
+  @doc false
   def handle_event(mod, sagas, event) do
     {interest, id} = mod.interested?(event)
 

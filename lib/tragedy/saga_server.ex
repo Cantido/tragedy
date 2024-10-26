@@ -1,24 +1,31 @@
 defmodule Tragedy.SagaServer do
-  alias Tragedy.Saga
+  @moduledoc false
+
   use GenServer
+
+  alias Tragedy.Saga
 
   require Logger
 
+  @doc false
   def start_link(args) do
     GenServer.start_link(__MODULE__, args)
   end
 
+  @impl GenServer
   def init(args) do
     module = Keyword.fetch!(args, :module)
     id = Keyword.fetch!(args, :id)
     {:ok, %{module: module, id: id, saga: module.new(id)}}
   end
 
+  @doc false
   @spec handle_event(GenServer.server(), term()) :: {:ok, list(Tragedy.Command.t())}
   def handle_event(pid, event) do
     GenServer.call(pid, {:handle_event, event})
   end
 
+  @impl GenServer
   def handle_call({:handle_event, event}, _from, state) do
     case state.module.interested?(event) do
       {:start, id} when id == state.id ->

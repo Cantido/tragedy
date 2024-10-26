@@ -1,4 +1,6 @@
 defmodule Tragedy.CommandRouter do
+  @moduledoc false
+
   use GenServer
 
   alias Tragedy.ListenerSupervisor
@@ -11,6 +13,7 @@ defmodule Tragedy.CommandRouter do
     GenServer.start_link(__MODULE__, {domain_pid, config})
   end
 
+  @impl GenServer
   def init({domain_pid, config}) do
     {:ok, %{domain_pid: domain_pid, config: config}}
   end
@@ -20,6 +23,7 @@ defmodule Tragedy.CommandRouter do
     GenServer.call(router, {:dispatch, command})
   end
 
+  @impl GenServer
   def handle_call({:dispatch, command}, _from, state) do
     agg_pool_pid = DomainSupervisor.aggregate_pool_supervisor_pid(state.domain_pid)
 
@@ -36,9 +40,6 @@ defmodule Tragedy.CommandRouter do
 
       {:reply, result, state}
     else
-      {:ok, nil} ->
-        {:reply, {:error, :aggregate_failed_to_start}, state}
-
       err ->
         {:reply, err, state}
     end

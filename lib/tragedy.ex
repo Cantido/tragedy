@@ -3,12 +3,14 @@ defmodule Tragedy do
   Documentation for `Tragedy`.
   """
 
+  @doc false
   def aggregate do
     quote do
       use Tragedy.Aggregate.Base
     end
   end
 
+  @doc false
   def saga do
     quote do
       use Tragedy.Saga.Base

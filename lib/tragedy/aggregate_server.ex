@@ -1,4 +1,6 @@
 defmodule Tragedy.AggregateServer do
+  @moduledoc false
+
   alias Tragedy.Aggregate
   use GenServer
 
@@ -15,11 +17,17 @@ defmodule Tragedy.AggregateServer do
     {:ok, %{module: agg_mod, id: agg_id, aggregate: agg_state}}
   end
 
+  @doc """
+  Get events from an aggregate.
+  """
   @spec handle_command(GenServer.server(), Tragedy.Command.t()) :: {:ok, list(term())} | {:error, term()}
   def handle_command(agg_pid, command) do
     GenServer.call(agg_pid, {:handle_command, command})
   end
 
+  @doc """
+  Update an aggregate with events.
+  """
   def handle_events(agg_pid, events) do
     GenServer.call(agg_pid, {:handle_events, events})
   end

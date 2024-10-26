@@ -6,10 +6,12 @@ defprotocol Tragedy.Saga do
   @doc """
   Update the saga's state based on the event.
   """
-  def apply(pm, event)
+  @spec apply(t(), any()) :: t()
+  def apply(saga, event)
 
   @doc """
   Emits commands in response to events.
   """
-  def handle(pm, event)
+  @spec handle(t(), any()) :: any() | list(any())
+  def handle(saga, event)
 end

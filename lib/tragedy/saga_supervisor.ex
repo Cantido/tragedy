@@ -1,15 +1,18 @@
 defmodule Tragedy.SagaSupervisor do
+  @moduledoc false
+
   use Supervisor
 
   alias Tragedy.SagaServer
 
   require Logger
 
+  @doc false
   def start_link(args) do
     Supervisor.start_link(__MODULE__, args)
   end
 
-  @impl true
+  @impl Supervisor
   def init(_args) do
     Supervisor.init([], strategy: :one_for_one)
   end
@@ -22,6 +25,7 @@ defmodule Tragedy.SagaSupervisor do
     Supervisor.start_child(pid, child)
   end
 
+  @doc false
   def handle_events(pid, events) do
     Enum.flat_map(events, fn event ->
       pid

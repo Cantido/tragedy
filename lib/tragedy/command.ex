@@ -19,8 +19,8 @@ defprotocol Tragedy.Command do
   @doc """
   Returns a tuple of the aggregate module and aggregate ID that this command should act upon.
   """
+  @spec aggregate(Tragedy.Command.t()) :: {module(), any()}
   def aggregate(command)
-
 end
 
 defimpl Tragedy.Command, for: Any do

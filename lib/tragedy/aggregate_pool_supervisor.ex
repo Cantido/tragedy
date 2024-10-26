@@ -1,8 +1,11 @@
 defmodule Tragedy.AggregatePoolSupervisor do
+  @moduledoc false
+
   use Supervisor
 
   alias Tragedy.AggregateServer
 
+  @spec start_link(Keyword.t()) :: Supervisor.on_start()
   def start_link(args) do
     Supervisor.start_link(__MODULE__, args)
   end
@@ -12,6 +15,10 @@ defmodule Tragedy.AggregatePoolSupervisor do
     Supervisor.init([], strategy: :one_for_one)
   end
 
+  @doc """
+  Start a new aggregate under this supervisor.
+  """
+  @spec start_aggregate(Supervisor.supervisor(), module(), any()) :: Supervisor.on_start_child()
   def start_aggregate(pool_pid, agg_mod, agg_id) do
     spec =
       {AggregateServer, [module: agg_mod, id: agg_id]}

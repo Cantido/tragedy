@@ -13,15 +13,18 @@ defprotocol Tragedy.Aggregate do
   @doc """
   Returns the unique ID of an aggregate.
   """
+  @spec id(t()) :: any()
   def id(agg)
 
   @doc """
   Update the aggregate's state based on an event.
   """
+  @spec apply(t(), any()) :: t()
   def apply(agg, event)
 
   @doc """
   Transform a command into one or more events.
   """
+  @spec execute(t(), Tragedy.Command.t()) :: any() | list(any()) | {:ok, any()} | {:ok, list(any())} | {:error, any()}
   def execute(agg, command)
 end

@@ -1,4 +1,6 @@
 defmodule Tragedy.DomainSupervisor do
+  @moduledoc false
+
   use Supervisor
 
   alias Tragedy.AggregatePoolSupervisor
@@ -6,10 +8,12 @@ defmodule Tragedy.DomainSupervisor do
   alias Tragedy.SagaSupervisor
   alias Tragedy.ListenerSupervisor
 
+  @spec start_link(Tragedy.DomainConfig.t()) :: Supervisor.on_start()
   def start_link(config) do
     Supervisor.start_link(__MODULE__, config)
   end
 
+  @impl Supervisor
   def init(config) do
     children = [
       {CommandRouter, {self(), config}} |> Supervisor.child_spec(id: :command_router),
@@ -21,6 +25,8 @@ defmodule Tragedy.DomainSupervisor do
     Supervisor.init(children, strategy: :one_for_one)
   end
 
+  @doc false
+  @spec command_router_pid(Supervisor.supervisor()) :: pid() | nil
   def command_router_pid(supervisor) do
     supervisor
     |> Supervisor.which_children()
@@ -33,6 +39,8 @@ defmodule Tragedy.DomainSupervisor do
     end)
   end
 
+  @doc false
+  @spec aggregate_pool_supervisor_pid(Supervisor.supervisor()) :: pid() | nil
   def aggregate_pool_supervisor_pid(supervisor) do
     supervisor
     |> Supervisor.which_children()
@@ -45,6 +53,8 @@ defmodule Tragedy.DomainSupervisor do
     end)
   end
 
+  @doc false
+  @spec saga_supervisor_pid(Supervisor.supervisor()) :: pid() | nil
   def saga_supervisor_pid(supervisor) do
     supervisor
     |> Supervisor.which_children()
@@ -57,6 +67,8 @@ defmodule Tragedy.DomainSupervisor do
     end)
   end
 
+  @doc false
+  @spec listener_supervisor_pid(Supervisor.supervisor()) :: pid() | nil
   def listener_supervisor_pid(supervisor) do
     supervisor
     |> Supervisor.which_children()
@@ -69,6 +81,8 @@ defmodule Tragedy.DomainSupervisor do
     end)
   end
 
+  @doc false
+  @spec dispatch(Supervisor.supervisor(), Tragedy.Command.t()) :: :ok | :error | {:error, any()}
   def dispatch(supervisor, command) do
     with router_id when is_pid(router_id) <- command_router_pid(supervisor) do
       CommandRouter.dispatch(router_id, command)

@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: MIT
 
 defmodule Calamity.Commands.DepositFunds do
+  @moduledoc false
+
   defstruct [
     :account_id,
     :transfer_id,

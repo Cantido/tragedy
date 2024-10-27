@@ -52,42 +52,48 @@ defmodule Tragedy.CommandRouter do
   defp do_dispatch(agg_pid, saga_sup_pid, listener_sup_pid, saga_modules, [
          command | remaining_commands
        ]) do
-    with {:ok, events} <- AggregateServer.handle_command(agg_pid, command) do
-      Enum.each(saga_modules, fn saga_mod ->
-        saga_id =
-          Enum.find_value(events, fn event ->
-            case saga_mod.interested?(event) do
-              {:start, id} -> id
-              _ -> false
-            end
-          end)
+    case AggregateServer.handle_command(agg_pid, command) do
+      {:ok, events} ->
+        start_sagas(saga_sup_pid, saga_modules, events)
 
-        SagaSupervisor.start_saga(saga_sup_pid, saga_mod, saga_id)
-      end)
+        [
+          Task.async(fn -> SagaSupervisor.handle_events(saga_sup_pid, events) end),
+          Task.async(fn -> AggregateServer.handle_events(agg_pid, events) end),
+          Task.async(fn -> ListenerSupervisor.handle_events(listener_sup_pid, events) end)
+        ]
+        |> Task.await_many()
+        |> List.first()
+        |> case do
+          {:ok, new_commands} ->
+            do_dispatch(
+              agg_pid,
+              saga_sup_pid,
+              listener_sup_pid,
+              saga_modules,
+              remaining_commands ++ new_commands
+            )
 
-      [
-        Task.async(fn -> SagaSupervisor.handle_events(saga_sup_pid, events) end),
-        Task.async(fn -> AggregateServer.handle_events(agg_pid, events) end),
-        Task.async(fn -> ListenerSupervisor.handle_events(listener_sup_pid, events) end)
-      ]
-      |> Task.await_many()
-      |> List.first()
-      |> case do
-        {:ok, new_commands} ->
-          do_dispatch(
-            agg_pid,
-            saga_sup_pid,
-            listener_sup_pid,
-            saga_modules,
-            remaining_commands ++ new_commands
-          )
+          err ->
+            err
+        end
 
-        err ->
-          err
-      end
-    else
       err ->
         err
     end
+  end
+
+  defp start_sagas(saga_sup_pid, saga_modules, events) do
+    Enum.flat_map(saga_modules, fn saga_mod ->
+      Enum.map(events, fn event ->
+        {saga_mod, saga_mod.interested?(event)}
+      end)
+    end)
+    |> Enum.each(fn
+      {saga_mod, {:start, saga_id}} ->
+        SagaSupervisor.start_saga(saga_sup_pid, saga_mod, saga_id)
+
+      _ ->
+        false
+    end)
   end
 end

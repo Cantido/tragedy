@@ -25,6 +25,7 @@ defprotocol Tragedy.Aggregate do
   @doc """
   Transform a command into one or more events.
   """
-  @spec execute(t(), Tragedy.Command.t()) :: any() | list(any()) | {:ok, any()} | {:ok, list(any())} | {:error, any()}
+  @spec execute(t(), Tragedy.Command.t()) ::
+          any() | list(any()) | {:ok, any()} | {:ok, list(any())} | {:error, any()}
   def execute(agg, command)
 end

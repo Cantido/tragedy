@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: MIT
 
 defmodule Calamity.ProcessManagers.Transfer do
+  @moduledoc false
+
   use Tragedy, :saga
 
   alias Calamity.Commands.{

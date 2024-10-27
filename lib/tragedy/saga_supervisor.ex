@@ -30,18 +30,7 @@ defmodule Tragedy.SagaSupervisor do
     Enum.flat_map(events, fn event ->
       pid
       |> Supervisor.which_children()
-      |> Enum.map(fn
-        {_, saga, _, _} ->
-          Task.async(fn ->
-            case SagaServer.handle_event(saga, event) do
-              {:ok, commands} ->
-                List.wrap(commands)
-            end
-          end)
-
-        _ ->
-          false
-      end)
+      |> Enum.map(&event_to_child(&1, event))
       |> Task.await_many()
       |> List.flatten()
     end)
@@ -49,4 +38,15 @@ defmodule Tragedy.SagaSupervisor do
       {:ok, commands}
     end)
   end
+
+  defp event_to_child({_, saga, _, _}, event) when is_pid(saga) do
+    Task.async(fn ->
+      case SagaServer.handle_event(saga, event) do
+        {:ok, commands} ->
+          List.wrap(commands)
+      end
+    end)
+  end
+
+  defp event_to_child(_, _), do: false
 end

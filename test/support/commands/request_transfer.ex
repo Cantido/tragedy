@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: MIT
 
 defmodule Calamity.Commands.RequestTransfer do
+  @moduledoc false
+
   defstruct [
     :transfer_id,
     :from,

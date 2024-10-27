@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: MIT
 
 defmodule Calamity.BankAccount do
+  @moduledoc false
+
   use Tragedy, :aggregate
 
   alias Calamity.Commands.{

@@ -84,9 +84,10 @@ defmodule Tragedy.DomainSupervisor do
   @doc false
   @spec dispatch(Supervisor.supervisor(), Tragedy.Command.t()) :: :ok | :error | {:error, any()}
   def dispatch(supervisor, command) do
-    with router_id when is_pid(router_id) <- command_router_pid(supervisor) do
-      CommandRouter.dispatch(router_id, command)
-    else
+    case command_router_pid(supervisor) do
+      router_id when is_pid(router_id) ->
+        CommandRouter.dispatch(router_id, command)
+
       _ ->
         :error
     end

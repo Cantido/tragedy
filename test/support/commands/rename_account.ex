@@ -3,6 +3,8 @@
 # SPDX-License-Identifier: MIT
 
 defmodule Calamity.Commands.RenameAccount do
+  @moduledoc false
+
   defstruct [
     :account_id,
     :name

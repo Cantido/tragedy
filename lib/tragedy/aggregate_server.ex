@@ -20,7 +20,8 @@ defmodule Tragedy.AggregateServer do
   @doc """
   Get events from an aggregate.
   """
-  @spec handle_command(GenServer.server(), Tragedy.Command.t()) :: {:ok, list(term())} | {:error, term()}
+  @spec handle_command(GenServer.server(), Tragedy.Command.t()) ::
+          {:ok, list(term())} | {:error, term()}
   def handle_command(agg_pid, command) do
     GenServer.call(agg_pid, {:handle_command, command})
   end

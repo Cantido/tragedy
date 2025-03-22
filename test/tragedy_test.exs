@@ -6,27 +6,19 @@ defmodule TragedyTest do
 
   doctest Tragedy
 
-  defmodule TestListener do
-    use GenServer
-
-    def start_link(test_pid), do: GenServer.start_link(__MODULE__, test_pid)
-    def init(test_pid), do: {:ok, test_pid}
-
-    def handle_call({:event, event}, _from, test_pid) do
-      send(test_pid, {:event, event})
-      {:reply, :ok, test_pid}
-    end
-  end
-
   test "listeners get events" do
     pid =
       start_supervised!(
-        {DomainSupervisor, %DomainConfig{listener_specs: [{TestListener, self()}]}}
+        {DomainSupervisor,
+         %DomainConfig{
+           name: :listener_test,
+           listener_specs: [{Calamity.MessengerListener, pid: self()}]
+         }}
       )
 
     :ok = DomainSupervisor.dispatch(pid, %Calamity.Commands.CreateAccount{account_id: "test id"})
 
-    assert_receive {:event, event}
+    assert_receive {:listener_received_event, event}
 
     assert event == %Calamity.Events.AccountCreated{account_id: "test id"}
   end
@@ -36,8 +28,9 @@ defmodule TragedyTest do
       start_supervised!(
         {DomainSupervisor,
          %DomainConfig{
+           name: :aggregate_error_test,
            saga_modules: [Calamity.ProcessManagers.Transfer],
-           listener_specs: [{TestListener, self()}]
+           listener_specs: [{Calamity.MessengerListener, pid: self()}]
          }}
       )
 
@@ -58,8 +51,9 @@ defmodule TragedyTest do
       start_supervised!(
         {DomainSupervisor,
          %DomainConfig{
+           name: :saga_test,
            saga_modules: [Calamity.ProcessManagers.Transfer],
-           listener_specs: [{TestListener, self()}]
+           listener_specs: [{Calamity.MessengerListener, pid: self()}]
          }}
       )
 
@@ -77,6 +71,21 @@ defmodule TragedyTest do
         amount: 100
       })
 
-    assert_receive {:event, %Calamity.Events.FundsDeposited{transfer_id: "test transfer"}}
+    assert_receive {:listener_received_event,
+                    %Calamity.Events.FundsDeposited{transfer_id: "test transfer"}}
+  end
+
+  test "use domain listeners get called" do
+    start_supervised!(Calamity.Domain)
+
+    :ok =
+      Calamity.Domain.dispatch(%Calamity.Commands.SendResponse{
+        account_id: "test id",
+        response_pid: self()
+      })
+
+    assert_receive {:listener_received_event, event}
+
+    assert event.account_id == "test id"
   end
 end

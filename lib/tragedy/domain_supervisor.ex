@@ -10,7 +10,7 @@ defmodule Tragedy.DomainSupervisor do
 
   @spec start_link(Tragedy.DomainConfig.t()) :: Supervisor.on_start()
   def start_link(config) do
-    Supervisor.start_link(__MODULE__, config)
+    Supervisor.start_link(__MODULE__, config, name: config.name)
   end
 
   @impl Supervisor

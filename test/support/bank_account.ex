@@ -12,7 +12,8 @@ defmodule Calamity.BankAccount do
     RenameAccount,
     DepositFunds,
     WithdrawFunds,
-    RequestTransfer
+    RequestTransfer,
+    SendResponse
   }
 
   alias Calamity.Events.{
@@ -20,8 +21,11 @@ defmodule Calamity.BankAccount do
     AccountRenamed,
     FundsWithdrawn,
     FundsDeposited,
-    TransferInitiated
+    TransferInitiated,
+    ResponsePermitted
   }
+
+  require Logger
 
   defstruct account_id: nil,
             balance: 0,
@@ -36,15 +40,27 @@ defmodule Calamity.BankAccount do
       account.account_id
     end
 
+    def execute(%{account_id: account_id}, %SendResponse{
+          account_id: account_id,
+          response_pid: pid
+        }) do
+      Logger.info("Executing SendResponse")
+      %ResponsePermitted{account_id: account_id, response_pid: pid}
+    end
+
     def execute(%{account_id: account_id}, %CreateAccount{account_id: account_id}) do
+      Logger.info("Executing CreateAccount")
       %AccountCreated{account_id: account_id}
     end
 
     def execute(account, %RenameAccount{name: name}) do
+      Logger.info("Executing RenameAccount")
       %AccountRenamed{account_id: account.account_id, name: name}
     end
 
     def execute(account, %DepositFunds{amount: amount, transfer_id: transfer_id}) do
+      Logger.info("Executing DepositFunds")
+
       %FundsDeposited{
         account_id: account.account_id,
         amount: amount,
@@ -53,6 +69,8 @@ defmodule Calamity.BankAccount do
     end
 
     def execute(account, %WithdrawFunds{amount: amount, transfer_id: transfer_id}) do
+      Logger.info("Executing WithdrawFunds")
+
       if account.balance >= amount do
         %FundsWithdrawn{
           account_id: account.account_id,
@@ -65,6 +83,8 @@ defmodule Calamity.BankAccount do
     end
 
     def execute(account, %RequestTransfer{to: to, amount: amount, transfer_id: transfer_id}) do
+      Logger.info("Executing RequestTransfer")
+
       if account.balance >= amount do
         %TransferInitiated{
           from: account.account_id,
@@ -94,6 +114,10 @@ defmodule Calamity.BankAccount do
     end
 
     def apply(account, %TransferInitiated{}) do
+      account
+    end
+
+    def apply(account, %Calamity.Events.ResponsePermitted{}) do
       account
     end
   end
